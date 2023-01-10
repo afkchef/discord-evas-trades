@@ -12,10 +12,10 @@ import threading
 # Input: channelid, discord channel id as a string
 # Output: evas_positions, array of robin-stocks api friendly strings with option order information
 # ------------
-def retrieve_option_messages(channelid):
+def retrieve_option_messages(channelid, dis_token):
     open_positions =[]
     headers={
-        'authorization': "MTYwMTk1ODQwMTczMDE1MDQw.GZRGP1._fcAcCRs3hLvZ49Fb1h-_xwqZGeSMKmQh9nCFw"
+        'authorization': dis_token
     }
     r = requests.get(
         f'https://discord.com/api/v9/channels/{channelid}/messages?limit=50',headers=headers)
