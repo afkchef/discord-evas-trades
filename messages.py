@@ -2,8 +2,7 @@ import requests
 import re
 import json
 import time
-from datetime import datetime, timedelta
-import threading
+from datetime import datetime
 
 # retrieve_option_messages(string:channelid)
 # 
@@ -20,9 +19,7 @@ def retrieve_option_messages(channelid, dis_token):
     r = requests.get(
         f'https://discord.com/api/v9/channels/{channelid}/messages?limit=50',headers=headers)
     jsonn = json.loads(r.text)
-
-    past = datetime.now() - timedelta(days=1)
-
+    
     for value in jsonn:
         embed = value['embeds']
         if embed != []:
@@ -32,12 +29,13 @@ def retrieve_option_messages(channelid, dis_token):
             post_time = post_time.replace('+','T')
             post_time_arr = post_time.split('T')
             post_time = post_time_arr[0]+" "+post_time_arr[1]
-            post_time = datetime.strptime(post_time, "%Y-%m-%d %H:%M:%S.%f")
-            past_flag = post_time < datetime.now()
-
+            if post_time_arr[0] == datetime.now().strftime("%Y-%m-%d"):
+                past_flag = False
+            else:
+                past_flag = True
             title = embed[0]['title']
-            content = embed[0]['description'].split()            
-            if title == 'Close' and not past_flag:
+            content = embed[0]['description'].split()
+            if title == 'Open' and not past_flag:
                 position = content[0]
                 tcker = content[1]
                 option = content[2]
@@ -54,7 +52,6 @@ def retrieve_option_messages(channelid, dis_token):
                 if slashes == 1:
                     date += "/2023"
                 dd = datetime.strptime(date,'%m/%d/%Y').strftime('%Y-%m-%d')
-
                 cost = content[5]
                 open_positions += [f"{post_time} {tcker} {option_price} {option_dir} {dd} {cost}"]
     return open_positions
@@ -63,9 +60,6 @@ def retrieve_option_messages(channelid, dis_token):
     # 2.wait for confirmation and add to the list of current orders
     # 3.else ignore the processing
 
-#arr = retrieve_option_messages('1022585814183575603')
-#print(arr)
-#evapands id: 1022585814183575603
 
 #TODO: 
 # DONE separate the string to get all the necessary info for option trading
