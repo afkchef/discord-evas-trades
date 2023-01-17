@@ -89,7 +89,6 @@ def open_pos_if_available(pos, my_positions):
 
 print("Initializing eva trades capture...")
 discord_tk = login()
-trades_to_process = []
 trades_seen = []
 q1 = queue.Queue()
 while True:
@@ -102,6 +101,8 @@ while True:
         if eva_pos not in trades_seen:
             q1.put(eva_pos)
     
+    print(f"Positions to process: {list(q1.queue)}")
+
     #Dequeue to process 
     while not q1.empty():
         position = q1.get()
@@ -111,5 +112,4 @@ while True:
             print("Cancelled position open!")
         #add to seen positions
         trades_seen.append(position)
-    print(trades_to_process)
     time.sleep(5)
