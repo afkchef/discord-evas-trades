@@ -18,6 +18,7 @@ def retrieve_option_messages(channelid, dis_token):
     }
     r = requests.get(
         f'https://discord.com/api/v9/channels/{channelid}/messages?limit=50',headers=headers)
+    
     jsonn = json.loads(r.text)
     
     for value in jsonn:
